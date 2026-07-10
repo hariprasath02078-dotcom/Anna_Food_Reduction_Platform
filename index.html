@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anna Setu — the Rescue Ledger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #EFE7D2;
+    --paper-card: #F7F1E1;
+    --paper-dark: #E2D7B8;
+    --ink: #1D1B14;
+    --ink-soft: #4A4636;
+    --green: #204B36;
+    --green-light: #3E7A56;
+    --marigold: #E2A233;
+    --stamp-red: #A83B2E;
+    --rule: rgba(29,27,20,0.18);
+    --shadow: 0 1px 0 rgba(29,27,20,0.06);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      repeating-linear-gradient(180deg, rgba(29,27,20,0.028) 0px, rgba(29,27,20,0.028) 1px, transparent 1px, transparent 34px),
+      var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{font-family:'Fraunces',serif;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  a{color:inherit;}
+
+  .wrap{max-width:1080px;margin:0 auto;padding:0 28px;}
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(239,231,210,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--rule);
+  }
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:66px;}
+  .brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:700;font-size:20px;letter-spacing:-0.01em;}
+  .brand .stamp-mini{
+    width:26px;height:26px;border-radius:50%;border:1.5px solid var(--green);
+    display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--green);font-family:'IBM Plex Mono',monospace;
+    transform:rotate(-8deg);
+  }
+  .navlinks{display:flex;gap:28px;font-size:14px;font-weight:500;color:var(--ink-soft);}
+  .navlinks a{text-decoration:none;border-bottom:1px solid transparent;padding-bottom:2px;transition:.15s;}
+  .navlinks a:hover{border-color:var(--marigold);color:var(--ink);}
+
+  /* ---------- HERO ---------- */
+  header.hero{padding:76px 0 54px;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--green);display:flex;align-items:center;gap:10px;margin-bottom:22px;
+  }
+  .eyebrow::before{content:"";width:26px;height:1px;background:var(--green);display:inline-block;}
+  .hero h1{
+    font-size:clamp(40px,6vw,68px);line-height:1.02;font-weight:700;letter-spacing:-0.02em;margin:0 0 22px;max-width:820px;
+  }
+  .hero h1 em{font-style:italic;color:var(--green);font-weight:600;}
+  .hero p.lede{font-size:19px;line-height:1.55;color:var(--ink-soft);max-width:560px;margin:0 0 34px;}
+  .hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:54px;}
+  .btn{
+    font-family:'Inter',sans-serif;font-weight:600;font-size:15px;padding:13px 24px;border-radius:3px;
+    border:1.5px solid var(--ink);cursor:pointer;transition:.15s;text-decoration:none;display:inline-block;
+  }
+  .btn-primary{background:var(--green);border-color:var(--green);color:#fff;}
+  .btn-primary:hover{background:#153627;}
+  .btn-ghost{background:transparent;color:var(--ink);}
+  .btn-ghost:hover{background:var(--paper-dark);}
+
+  /* stat ledger strip */
+  .ledger-strip{
+    display:grid;grid-template-columns:repeat(4,1fr);
+    border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+  }
+  .ledger-strip .cell{padding:20px 4px 18px;border-left:1px solid var(--rule);}
+  .ledger-strip .cell:first-child{border-left:none;padding-left:0;}
+  .ledger-strip .num{font-family:'IBM Plex Mono',monospace;font-size:30px;font-weight:600;color:var(--green);}
+  .ledger-strip .lbl{font-size:12.5px;color:var(--ink-soft);margin-top:4px;}
+
+  /* ---------- SECTION HEADS ---------- */
+  .section{padding:78px 0;border-bottom:1px solid var(--rule);}
+  .section-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:40px;gap:24px;flex-wrap:wrap;}
+  .section-head .tag{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--green);text-transform:uppercase;letter-spacing:.12em;margin-bottom:10px;display:block;}
+  .section-head h2{font-size:clamp(28px,4vw,38px);margin:0;font-weight:700;letter-spacing:-0.015em;}
+  .section-head p{color:var(--ink-soft);font-size:15px;max-width:360px;margin:0;}
+
+  /* ---------- HOW ---------- */
+  .how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--rule);}
+  .how-card{padding:28px 26px;border-left:1px solid var(--rule);position:relative;}
+  .how-card:first-child{border-left:none;padding-left:0;}
+  .how-card .idx{font-family:'IBM Plex Mono',monospace;color:var(--marigold);font-size:13px;margin-bottom:14px;}
+  .how-card h3{font-size:20px;margin:0 0 10px;font-weight:600;}
+  .how-card p{font-size:14.5px;color:var(--ink-soft);line-height:1.55;margin:0;}
+
+  /* ---------- APP DEMO ---------- */
+  .app-shell{
+    background:var(--paper-card);border:1px solid var(--rule);border-radius:6px;
+    box-shadow:0 18px 40px -22px rgba(29,27,20,0.35);overflow:hidden;
+  }
+  .app-tabs{display:flex;border-bottom:1px solid var(--rule);background:var(--paper-dark);}
+  .app-tab{
+    flex:1;padding:16px 18px;text-align:center;font-weight:600;font-size:14.5px;cursor:pointer;
+    color:var(--ink-soft);border-right:1px solid var(--rule);user-select:none;transition:.15s;
+  }
+  .app-tab:last-child{border-right:none;}
+  .app-tab.active{background:var(--paper-card);color:var(--green);}
+  .app-panel{display:none;padding:30px 30px 34px;}
+  .app-panel.active{display:block;}
+
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 18px;}
+  .field{display:flex;flex-direction:column;gap:6px;}
+  .field.full{grid-column:1/-1;}
+  .field label{font-size:12.5px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;}
+  .field input, .field select{
+    font-family:'Inter',sans-serif;font-size:14.5px;padding:11px 12px;border:1.5px solid var(--rule);
+    border-radius:3px;background:#fff;color:var(--ink);
+  }
+  .field input:focus, .field select:focus{outline:2px solid var(--marigold);outline-offset:1px;border-color:var(--marigold);}
+  .form-actions{margin-top:20px;display:flex;align-items:center;gap:14px;}
+  .hint{font-size:13px;color:var(--ink-soft);}
+
+  /* ledger board (listings) */
+  .board-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+  .board-head h3{margin:0;font-size:16px;}
+  .filter-row{display:flex;gap:8px;}
+  .chip{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;padding:6px 12px;border:1px solid var(--rule);border-radius:20px;
+    cursor:pointer;color:var(--ink-soft);background:transparent;
+  }
+  .chip.active{background:var(--green);border-color:var(--green);color:#fff;}
+
+  .listing{
+    display:grid;grid-template-columns:64px 1.4fr 1fr 1fr 100px;align-items:center;gap:14px;
+    padding:16px 10px;border-bottom:1px dashed var(--rule);
+  }
+  .listing:last-child{border-bottom:none;}
+  .listing .food-icon{
+    width:44px;height:44px;border-radius:50%;background:var(--paper-dark);display:flex;align-items:center;justify-content:center;font-size:20px;
+  }
+  .listing .name{font-weight:600;font-size:15px;}
+  .listing .sub{font-size:12.5px;color:var(--ink-soft);margin-top:2px;}
+  .listing .meta{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--ink-soft);}
+  .listing .expiry{font-family:'IBM Plex Mono',monospace;font-size:12.5px;}
+  .expiry.urgent{color:var(--stamp-red);font-weight:600;}
+  .expiry.ok{color:var(--green-light);}
+  .claim-btn{
+    font-family:'Inter',sans-serif;font-weight:600;font-size:13px;padding:9px 14px;border-radius:3px;
+    border:1.5px solid var(--green);background:transparent;color:var(--green);cursor:pointer;transition:.15s;white-space:nowrap;
+  }
+  .claim-btn:hover{background:var(--green);color:#fff;}
+  .stamp{
+    font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:700;color:var(--stamp-red);
+    border:1.5px solid var(--stamp-red);border-radius:3px;padding:6px 10px;display:inline-block;
+    transform:rotate(-4deg);letter-spacing:.06em;text-align:center;
+  }
+  .empty-note{padding:30px 10px;text-align:center;color:var(--ink-soft);font-size:14px;}
+
+  /* impact panel */
+  .impact-panel{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--rule);border-radius:6px;overflow:hidden;margin-top:36px;}
+  .impact-side{padding:30px 28px;}
+  .impact-side.green{background:var(--green);color:#F4EEDD;}
+  .impact-side.green h3{color:#fff;}
+  .impact-side.green .num{color:var(--marigold);}
+  .impact-row{display:flex;justify-content:space-between;align-items:baseline;padding:10px 0;border-bottom:1px dashed rgba(255,255,255,0.18);}
+  .impact-row:last-child{border-bottom:none;}
+  .impact-row .num{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:600;}
+  .impact-side.paper{background:var(--paper-card);}
+  .impact-side.paper .num{color:var(--green);}
+  .impact-side.paper .impact-row{border-bottom:1px dashed var(--rule);}
+
+  /* ---------- STAKEHOLDERS ---------- */
+  .stake-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  .stake-card{
+    background:var(--paper-card);border:1px solid var(--rule);border-radius:6px;padding:22px 20px;
+  }
+  .stake-card .glyph{font-size:24px;margin-bottom:14px;display:block;}
+  .stake-card h3{font-size:16px;margin:0 0 8px;}
+  .stake-card p{font-size:13.5px;color:var(--ink-soft);line-height:1.5;margin:0;}
+
+  /* ---------- FOOTER ---------- */
+  footer{padding:44px 0 60px;}
+  footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;}
+  footer .foot-left{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--ink-soft);}
+  footer .foot-brand{font-family:'Fraunces',serif;font-weight:700;font-size:17px;}
+
+  @media(max-width:860px){
+    .how-grid{grid-template-columns:1fr;}
+    .how-card{border-left:none;border-top:1px solid var(--rule);padding-left:0;padding-top:22px;}
+    .how-card:first-child{border-top:none;}
+    .ledger-strip{grid-template-columns:repeat(2,1fr);}
+    .ledger-strip .cell:nth-child(3){border-left:none;padding-left:0;}
+    .stake-grid{grid-template-columns:repeat(2,1fr);}
+    .impact-panel{grid-template-columns:1fr;}
+    .form-grid{grid-template-columns:1fr;}
+    .listing{grid-template-columns:1fr;text-align:left;gap:8px;}
+    .listing .food-icon{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand"><span class="stamp-mini">अ</span> Anna Setu</div>
+    <div class="navlinks">
+      <a href="#app">Open the Ledger</a>
+      <a href="#how">How it works</a>
+      <a href="#who">Who it's for</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">SIH problem statement — Smart Management of Food Storage &amp; Waste Reduction</div>
+    <h1>Every day, edible food<br>goes to landfill while<br><em>someone nearby goes hungry.</em></h1>
+    <p class="lede">Anna Setu ("bridge of food") is a live ledger that connects anyone with surplus food — a restaurant, a wedding hall, a hostel mess, a household — to the nearest NGO or volunteer who can collect it before it spoils.</p>
+    <div class="hero-actions">
+      <a href="#app" class="btn btn-primary">Open the working demo →</a>
+      <a href="#how" class="btn btn-ghost">See how it works</a>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="ledger-strip">
+      <div class="cell"><div class="num">67M</div><div class="lbl">tonnes of food wasted in India every year</div></div>
+      <div class="cell"><div class="num">₹92,000cr</div><div class="lbl">estimated value of that wasted food</div></div>
+      <div class="cell"><div class="num">194M</div><div class="lbl">people in India undernourished</div></div>
+      <div class="cell"><div class="num">&lt;30min</div><div class="lbl">to list, match &amp; confirm a pickup on Anna Setu</div></div>
+    </div>
+  </div>
+</header>
+
+<section class="section" id="how">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="tag">Method</span>
+        <h2>Three entries in the ledger</h2>
+      </div>
+      <p>No cold storage, no new infrastructure — just faster information between people who already exist on both sides of the problem.</p>
+    </div>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="idx">01 — LIST</div>
+        <h3>Donor posts surplus</h3>
+        <p>A restaurant, hostel mess, event hall or household logs what's left, how much, and by when it needs to be collected — takes under a minute.</p>
+      </div>
+      <div class="how-card">
+        <div class="idx">02 — MATCH</div>
+        <h3>Nearest NGO is alerted</h3>
+        <p>The ledger ranks open listings by distance and time-to-spoil, so the closest verified NGO or volunteer sees the most urgent food first.</p>
+      </div>
+      <div class="how-card">
+        <div class="idx">03 — CLAIM</div>
+        <h3>Pickup is confirmed</h3>
+        <p>One tap claims the listing, the donor gets a confirmation, and the ledger logs the rescue — meals saved, become a running public record.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="app">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="tag">Live demo</span>
+        <h2>The Rescue Ledger</h2>
+      </div>
+      <p>A working prototype — post surplus food as a donor, or browse and claim listings as an NGO. Runs entirely in this page.</p>
+    </div>
+
+    <div class="app-shell">
+      <div class="app-tabs">
+        <div class="app-tab active" data-tab="board">Rescue Board</div>
+        <div class="app-tab" data-tab="donor">I have surplus food</div>
+      </div>
+
+      <div class="app-panel active" id="panel-board">
+        <div class="board-head">
+          <h3 class="mono" style="text-transform:uppercase;letter-spacing:.06em;">Open listings — nearest &amp; most urgent first</h3>
+          <div class="filter-row">
+            <button class="chip active" data-filter="all">All</button>
+            <button class="chip" data-filter="urgent">Expiring soon</button>
+          </div>
+        </div>
+        <div id="listings"></div>
+      </div>
+
+      <div class="app-panel" id="panel-donor">
+        <form id="donor-form">
+          <div class="form-grid">
+            <div class="field">
+              <label>Food item</label>
+              <input type="text" id="f-name" placeholder="e.g. Vegetable pulao, 15 kg" required>
+            </div>
+            <div class="field">
+              <label>Source type</label>
+              <select id="f-type">
+                <option>Restaurant</option>
+                <option>Wedding / event hall</option>
+                <option>Hostel mess</option>
+                <option>Household</option>
+                <option>Bakery / grocery</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Serves approx.</label>
+              <input type="number" id="f-serves" placeholder="e.g. 40 people" required min="1">
+            </div>
+            <div class="field">
+              <label>Pickup by</label>
+              <select id="f-expiry">
+                <option value="1">Within 1 hour</option>
+                <option value="3" selected>Within 3 hours</option>
+                <option value="6">Within 6 hours</option>
+                <option value="12">Within 12 hours</option>
+              </select>
+            </div>
+            <div class="field full">
+              <label>Pickup location</label>
+              <input type="text" id="f-loc" placeholder="e.g. Anna Nagar, Chennai" required>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">List this food →</button>
+            <span class="hint">It appears on the Rescue Board instantly, ranked by urgency.</span>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="impact-panel">
+      <div class="impact-side green">
+        <h3>Ledger totals</h3>
+        <div class="impact-row"><span>Meals rescued so far</span><span class="num mono" id="stat-meals">0</span></div>
+        <div class="impact-row"><span>Food waste diverted (kg)</span><span class="num mono" id="stat-kg">0</span></div>
+        <div class="impact-row"><span>Rescues in progress</span><span class="num mono" id="stat-open">0</span></div>
+      </div>
+      <div class="impact-side paper">
+        <h3>Why it matters</h3>
+        <div class="impact-row"><span>CO₂e avoided (est. kg)</span><span class="num mono" id="stat-co2">0</span></div>
+        <div class="impact-row"><span>Avg. time to claim</span><span class="num mono">18 min</span></div>
+        <div class="impact-row"><span>Active NGO partners (demo)</span><span class="num mono">6</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="who" style="border-bottom:none;">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="tag">Who it's for</span>
+        <h2>Built for four kinds of people</h2>
+      </div>
+      <p>Each side of the ledger gets exactly what it needs, nothing more.</p>
+    </div>
+    <div class="stake-grid">
+      <div class="stake-card"><span class="glyph">🍽️</span><h3>Restaurants &amp; caterers</h3><p>Turn unsold, unserved food into a same-day pickup instead of a bin.</p></div>
+      <div class="stake-card"><span class="glyph">🏠</span><h3>Households &amp; hostels</h3><p>Post leftovers from a family function or mess meal in under a minute.</p></div>
+      <div class="stake-card"><span class="glyph">🤝</span><h3>NGOs &amp; volunteers</h3><p>See every open listing near you, ranked by how soon it will spoil.</p></div>
+      <div class="stake-card"><span class="glyph">🏛️</span><h3>Local bodies</h3><p>A public ledger of meals rescued — real data for waste-reduction policy.</p></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-brand">Anna Setu</div>
+    <div class="foot-left">Prototype for Smart India Hackathon — Food Waste Reduction · built as a static, front-end-only demo</div>
+  </div>
+</footer>
+
+<script>
+  // ---------- seed data ----------
+  const icons = {
+    "Restaurant":"🍛","Wedding / event hall":"🎉","Hostel mess":"🍚","Household":"🏠","Bakery / grocery":"🥖"
+  };
+  let listings = [
+    {name:"Rice &amp; sambar, 20 kg", type:"Hostel mess", serves:65, loc:"Velachery, Chennai", hoursLeft:1, kg:20},
+    {name:"Mixed sabzi &amp; rotis", type:"Wedding / event hall", serves:120, loc:"Koramangala, Bengaluru", hoursLeft:2, kg:35},
+    {name:"Unsold bread &amp; pastries", type:"Bakery / grocery", serves:30, loc:"Bandra, Mumbai", hoursLeft:5, kg:12},
+    {name:"Veg biryani, 10 kg", type:"Restaurant", serves:28, loc:"Salem Junction, Salem", hoursLeft:3, kg:10},
+    {name:"Dal, rice &amp; curry — birthday event", type:"Household", serves:40, loc:"Sector 21, Chandigarh", hoursLeft:8, kg:16},
+  ];
+  let claimed = [];
+  let currentFilter = "all";
+
+  function renderListings(){
+    const el = document.getElementById('listings');
+    let rows = listings;
+    if(currentFilter==="urgent") rows = rows.filter(r=>r.hoursLeft<=2);
+    rows = [...rows].sort((a,b)=>a.hoursLeft-b.hoursLeft);
+    if(rows.length===0){
+      el.innerHTML = '<div class="empty-note">Nothing here right now — everything urgent has been claimed.</div>';
+      return;
+    }
+    el.innerHTML = rows.map((r,i)=>{
+      const idx = listings.indexOf(r);
+      const urgentClass = r.hoursLeft<=2 ? "urgent":"ok";
+      return `<div class="listing">
+        <div class="food-icon">${icons[r.type]||"🍲"}</div>
+        <div>
+          <div class="name">${r.name}</div>
+          <div class="sub">${r.type} · ${r.loc}</div>
+        </div>
+        <div class="meta">Serves ~${r.serves}</div>
+        <div class="expiry ${urgentClass}">Pickup within ${r.hoursLeft}h</div>
+        <button class="claim-btn" onclick="claimListing(${idx})">Claim pickup</button>
+      </div>`;
+    }).join("");
+  }
+
+  function claimListing(idx){
+    const item = listings[idx];
+    if(!item) return;
+    claimed.push(item);
+    listings.splice(idx,1);
+    renderListings();
+    updateStats();
+  }
+
+  function updateStats(){
+    const totalKg = claimed.reduce((s,r)=>s+r.kg,0);
+    const totalMeals = claimed.reduce((s,r)=>s+r.serves,0);
+    document.getElementById('stat-meals').textContent = totalMeals;
+    document.getElementById('stat-kg').textContent = totalKg;
+    document.getElementById('stat-open').textContent = listings.length;
+    document.getElementById('stat-co2').textContent = Math.round(totalKg*2.5);
+  }
+
+  document.querySelectorAll('.chip').forEach(chip=>{
+    chip.addEventListener('click', ()=>{
+      document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+      currentFilter = chip.dataset.filter;
+      renderListings();
+    });
+  });
+
+  document.querySelectorAll('.app-tab').forEach(tab=>{
+    tab.addEventListener('click', ()=>{
+      document.querySelectorAll('.app-tab').forEach(t=>t.classList.remove('active'));
+      document.querySelectorAll('.app-panel').forEach(p=>p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('panel-'+tab.dataset.tab).classList.add('active');
+    });
+  });
+
+  document.getElementById('donor-form').addEventListener('submit', function(e){
+    e.preventDefault();
+    const name = document.getElementById('f-name').value.trim();
+    const type = document.getElementById('f-type').value;
+    const serves = parseInt(document.getElementById('f-serves').value,10) || 10;
+    const hoursLeft = parseInt(document.getElementById('f-expiry').value,10);
+    const loc = document.getElementById('f-loc').value.trim();
+    if(!name || !loc) return;
+    listings.push({name, type, serves, loc, hoursLeft, kg: Math.round(serves*0.35)});
+    this.reset();
+    document.getElementById('f-expiry').value = "3";
+    document.querySelector('.app-tab[data-tab="board"]').click();
+    renderListings();
+    updateStats();
+  });
+
+  renderListings();
+  updateStats();
+</script>
+
+</body>
+</html>
